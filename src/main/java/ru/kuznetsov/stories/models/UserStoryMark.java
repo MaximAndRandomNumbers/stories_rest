@@ -1,8 +1,17 @@
 package ru.kuznetsov.stories.models;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name="user_story_mark")
 public class UserStoryMark {
 
     @EmbeddedId
@@ -22,8 +31,6 @@ public class UserStoryMark {
     private Integer mark;
 
 
-    public UserStoryMark(){}
-
     public UserStoryMark(User user, Story story, Integer mark) {
         this.id = new UserStoryMarkPK(user.getId(),story.getId());
         this.user = user;
@@ -31,35 +38,4 @@ public class UserStoryMark {
         this.mark = mark;
     }
 
-    public UserStoryMarkPK getId() {
-        return id;
-    }
-
-    public void setId(UserStoryMarkPK id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Story getStory() {
-        return story;
-    }
-
-    public void setStory(Story story) {
-        this.story = story;
-    }
-
-    public Integer getMark() {
-        return mark;
-    }
-
-    public void setMark(Integer mark) {
-        this.mark = mark;
-    }
 }

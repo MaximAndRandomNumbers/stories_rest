@@ -1,5 +1,6 @@
 package ru.kuznetsov.stories.models;
 
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,25 +19,9 @@ public class Role implements GrantedAuthority {
     @Column(length = 30)
     String roleName;
 
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "roles")
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "roles")
     @OnDelete(action = OnDeleteAction.CASCADE)
     Set<User> users = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
 
     @Override
     public String getAuthority() {

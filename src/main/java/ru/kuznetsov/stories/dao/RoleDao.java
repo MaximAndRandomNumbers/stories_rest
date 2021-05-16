@@ -6,4 +6,5 @@ import ru.kuznetsov.stories.models.Role;
 
 @Repository
 public interface RoleDao extends JpaRepository<Role,Long> {
+    Role findByRoleName(String name);
 }

@@ -9,9 +9,9 @@ import ru.kuznetsov.stories.models.UserStoryMarkPK;
 @Repository
 public interface UserStoryMarkDao extends JpaRepository<UserStoryMark,UserStoryMarkPK> {
 
-    @Query(value = "select sum(mark) from user_story_mark group by story_id having story_id = ?1",nativeQuery = true)
+    @Query(value = "select sum(mark) from user_story_mark where story_id = ?1",nativeQuery = true)
     Double findSumByStoryId(Long storyId);
 
-    @Query(value = "select count(mark) from user_story_mark group by story_id having story_id = ?1",nativeQuery = true)
+    @Query(value = "select count(mark) from user_story_mark where story_id = ?1",nativeQuery = true)
     Long findAmountOfMarksByStoryId(Long storyId);
 }
