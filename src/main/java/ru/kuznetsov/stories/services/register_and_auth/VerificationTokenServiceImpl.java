@@ -54,6 +54,12 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     }
 
     @Override
+    public void deleteToken(String token) {
+        VerificationToken verificationToken = verificationTokenDao.findByToken(token);
+        verificationTokenDao.delete(verificationToken);
+    }
+
+    @Override
     public void validateToken(String token){
         try{
             VerificationToken verificationToken = verificationTokenDao.findByToken(token);

@@ -17,6 +17,7 @@ public class RegRequestDto {
 
     @NotBlank(message = "Введите логин")
     @Length(min = 5, message = "Слишком короткий логин")
+    @Length(max = 30, message = "Длина логина должна быть меньше 30 символов")
     private String login;
 
     @NotBlank(message = "Введите пароль")

@@ -28,6 +28,12 @@ public class StoryServiceImp implements StoryService {
     private final GenreService genreService;
     private final UserService userService;
 
+    @Value("${validation.max_length.short_desc}")
+    private Long MAX_LENGTH_SHORT_DESC;
+
+    @Value("${validation.max_length.title}")
+    private Long MAX_LENGTH_TITLE;
+
     @Autowired
     public StoryServiceImp(StoryDao storyDao, GenreService genreService, UserService userService) {
         this.storyDao = storyDao;
@@ -90,9 +96,16 @@ public class StoryServiceImp implements StoryService {
         if (title == null || title.equals("")) {
             throw new ValidationException("Введите название рассказа");
         }
+
+        if(title.length() > MAX_LENGTH_TITLE){
+            throw new ValidationException("Длина названия должна быть меньше " + MAX_LENGTH_TITLE + " символов");
+        }
         String shortDesc = storyDto.getShortDesc();
-        if (shortDesc == null ) {
+        if (shortDesc == null || shortDesc.equals("")) {
             throw new ValidationException("Кратко опишите рассказ");
+        }
+        if(shortDesc.length() > MAX_LENGTH_SHORT_DESC){
+            throw new ValidationException("Длина краткого описания должна быть меньше " + MAX_LENGTH_SHORT_DESC + " символов");
         }
 
         Set<Long> genresIds = storyDto.getGenresId();

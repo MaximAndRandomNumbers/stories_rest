@@ -35,7 +35,7 @@ public class UserServiceImp implements UserService {
         User user = new User();
         user.setLogin(regRequest.getLogin());
         user.setPassword(bCrypt.encode(regRequest.getPassword()));
-        user.setEmail(regRequest.getEmail());
+        user.setEmail(regRequest.getEmail().toLowerCase());
         user.setEnabled(false);
         user.setRegistrationDate(new Date());
         user.getRoles().add(roleService.getRoleByName("ROLE_USER"));
@@ -50,7 +50,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userDao.findByEmail(email).orElse(null);
+        return userDao.findByEmail(email.toLowerCase()).orElse(null);
     }
 
     @Override

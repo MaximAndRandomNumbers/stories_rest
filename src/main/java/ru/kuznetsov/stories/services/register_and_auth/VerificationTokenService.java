@@ -10,4 +10,5 @@ public interface VerificationTokenService {
     void verifyUserByToken(String token);
     void validateToken(String token);
     User getUserByToken(String token);
+    void deleteToken(String token);
 }

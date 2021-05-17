@@ -100,6 +100,7 @@ public class AuthService {
         checkChangePasswordToken(passwordDto.getToken());
         User user = verificationTokenService.getUserByToken(passwordDto.getToken());
         userService.updatePassword(user, passwordDto.getNewPassword());
+        verificationTokenService.deleteToken(passwordDto.getToken());
     }
     public AuthenticationResponseDto refresh(RefreshTokenDto refreshTokenDto) {
         String login = refreshTokenDto.getLogin();
