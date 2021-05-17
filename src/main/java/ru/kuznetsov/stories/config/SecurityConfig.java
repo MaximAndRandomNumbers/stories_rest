@@ -22,8 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtConfigurer jwtConfigurer;
     private final AuthenticationProviderImpl authenticationProvider;
 
-    String[] authenticatedUrls = new String[]{"/api/mark/*","/api/mark",
-            "/api/user/name","/api/user/*/refactor-stories", "/api/notifications","/api/notification/*","/api/auth/logout"};
+    String[] authenticatedUrls = new String[]{"/api/mark/**","/api/mark",
+            "/api/user/name","/api/user/*/refactor-stories", "/api/notifications","/api/notification/**","/api/auth/logout"};
     String[] anonymousUrls = new String[]{
             "/api/auth/login", "/api/auth/reg"
     };
@@ -53,12 +53,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(anonymousUrls).anonymous()
                 .antMatchers(authenticatedUrls).authenticated()
-                .antMatchers("/api/admin","/api/admin/*").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/api/moderator","/api/moderator/*").hasAuthority("ROLE_MODERATOR")
+                .antMatchers("/api/admin","/api/admin/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/moderator","/api/moderator/**").hasAuthority("ROLE_MODERATOR")
                 .antMatchers(HttpMethod.POST,"/api/comments").authenticated()
                 .antMatchers(HttpMethod.POST,"/api/stories").authenticated()
-                .antMatchers(HttpMethod.DELETE,"/api/stories/*").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/api/comments/*").authenticated()
+                .antMatchers(HttpMethod.DELETE,"/api/stories/**").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
                 .anyRequest().permitAll()
                 .and().apply(jwtConfigurer).and().cors();
     }

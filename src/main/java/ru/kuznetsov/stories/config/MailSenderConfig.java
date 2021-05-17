@@ -20,6 +20,11 @@ public class MailSenderConfig {
     private int port;
     @Value("${spring.mail.protocol}")
     private String protocol;
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private String auth;
+
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
+    private String enable;
     @Bean
     public JavaMailSender javaMailSender(){
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
@@ -29,9 +34,13 @@ public class MailSenderConfig {
         javaMailSender.setPassword(password);
         javaMailSender.setPort(port);
 
+
+
         Properties properties = javaMailSender.getJavaMailProperties();
 
         properties.setProperty("mail.transport.protocol", protocol);
+        properties.setProperty("mail.smtp.auth", auth);
+        properties.setProperty("mail.smtp.starttls.enable", enable);
 
         return javaMailSender;
     }

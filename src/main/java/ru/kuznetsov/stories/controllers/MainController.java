@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class MainController {
 
-    @GetMapping({"/", "/sign-in", "/sign-up", "/stories", "/story/*",
-            "/refactor/*", "/notifications", "/notification/*","/moderator",
-    "publish","/user/*", "/forget",  "/admin"})
+    @GetMapping({"/", "/sign-in", "/sign-up", "/stories", "/story/**",
+            "/refactor/**", "/notifications", "/notification/**","/moderator",
+    "/publish","/user/**", "/forget",  "/admin"})
     public String home() {
         return "forward:/index.html";
     }
