@@ -32,13 +32,16 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         User myUser = userService.findByLogin(username);
         if (myUser == null) {
-            throw new BadCredentialsException("Unknown user " + username);
+            myUser = userService.findByEmail(username);
+            if(myUser == null) {
+                throw new BadCredentialsException("Неизвестный пользователь " + username);
+            }
         }
         if (!bCrypt.matches(password, myUser.getPassword())) {
-            throw new BadCredentialsException("Bad password");
+            throw new BadCredentialsException("Неверный пароль");
         }
         if (!myUser.getEnabled()) {
-            throw new BadCredentialsException("Please activate your account to log in");
+            throw new BadCredentialsException("Пожалуйста, активируйте аккаунт");
         }
         UserDetails userDetails = JwtUserFactory.create(myUser);
         return new UsernamePasswordAuthenticationToken(

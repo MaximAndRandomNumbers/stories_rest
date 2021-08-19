@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kuznetsov.stories.dto.CommentDto;
 import ru.kuznetsov.stories.security.exceptions.AccessDeniedException;
+import ru.kuznetsov.stories.security.exceptions.ValidationException;
 import ru.kuznetsov.stories.services.data.interfaces.CommentService;
 
 import java.security.Principal;
@@ -34,7 +35,9 @@ public class CommentRestController {
         try {
             commentService.save(commentDto, principal);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (RuntimeException e) {
+        } catch(ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

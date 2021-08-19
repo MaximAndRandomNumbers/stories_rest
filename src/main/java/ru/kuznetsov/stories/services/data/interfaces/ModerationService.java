@@ -8,7 +8,7 @@ import java.security.Principal;
 @Component
 public interface ModerationService {
     StoryDto getStoryToModerate(Principal principal);
-    void approveStory(Long storyId);
-    void rejectStory(Long storyId);
-    void returnStoryToRefactor(Long storyId, String comment);
+    void approveStory(Long storyId, Principal principal);
+    void rejectStory(Long storyId, Principal principal);
+    void returnStoryToRefactor(Long storyId, String comment, Principal principal);
 }

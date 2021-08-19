@@ -8,7 +8,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import ru.kuznetsov.stories.dao.CommentDao;
 import ru.kuznetsov.stories.dto.CommentDto;
 import ru.kuznetsov.stories.models.Comment;
+import ru.kuznetsov.stories.models.Role;
+import ru.kuznetsov.stories.models.User;
 import ru.kuznetsov.stories.security.exceptions.AccessDeniedException;
+import ru.kuznetsov.stories.security.exceptions.ValidationException;
 import ru.kuznetsov.stories.services.data.interfaces.CommentService;
 import ru.kuznetsov.stories.services.data.interfaces.StoryService;
 import ru.kuznetsov.stories.services.data.interfaces.UserService;
@@ -33,6 +36,9 @@ public class CommentServiceImp implements CommentService {
     public void save(CommentDto commentDto, Principal principal) {
         Comment comment = new Comment();
         comment.setStory(storyService.getById(commentDto.getStoryId()));
+        if(commentDto.getText() == null || commentDto.getText().equals("")){
+            throw new ValidationException("Введите текст комментария!");
+        }
         comment.setText(commentDto.getText());
         comment.setUser(userService.findByLogin(principal.getName()));
         comment.setDate(new Date());
@@ -47,8 +53,10 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public void delete(Long id, Principal principal) {
+        User user = userService.findByLogin(principal.getName());
+        boolean isModerator = user.getRoles().stream().map(Role::getRoleName).anyMatch(name -> name.equals("ROLE_MODERATOR"));
         Comment comment = getById(id).orElseThrow(() -> new IllegalArgumentException("No such comment"));
-        if(!comment.getUser().getLogin().equals(principal.getName())){
+        if(!comment.getUser().getLogin().equals(principal.getName()) && !isModerator){
             throw new AccessDeniedException("Can`t delete a comment of another user");
         }
         commentDao.delete(comment);

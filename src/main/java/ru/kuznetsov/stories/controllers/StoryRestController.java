@@ -77,10 +77,10 @@ public class StoryRestController {
             storyService.save(storyDto, principal);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (ValidationException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);}
-//        } catch (RuntimeException e){
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
     @PostMapping("/update/{id}")
     public ResponseEntity<?> refactorStory(@PathVariable Long id, @RequestBody StoryDto storyDto, Principal principal){

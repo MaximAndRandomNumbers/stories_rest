@@ -45,7 +45,6 @@ public class JwtTokenProvider {
 
     public String createToken(String username){
         Claims claims = Jwts.claims().setSubject(username);
-        //claims.put("roles", getRoleNames(userRoles));
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + validTimeInMilliseconds);
@@ -76,10 +75,6 @@ public class JwtTokenProvider {
             throw new JwtAuthenticationException("Invalid token", HttpStatus.UNAUTHORIZED);
         }
         return true;
-    }
-
-    public List<String> getRoleNames(Set<Role> userRoles){
-        return userRoles.stream().map(Role::getRoleName).collect(Collectors.toList());
     }
 
     public String resolveToken(String bearerToken){

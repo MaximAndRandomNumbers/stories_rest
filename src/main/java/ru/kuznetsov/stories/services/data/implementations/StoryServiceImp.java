@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.webjars.NotFoundException;
 import ru.kuznetsov.stories.dao.StoryDao;
 import ru.kuznetsov.stories.dto.FilterDto;
 import ru.kuznetsov.stories.dto.StoryDto;

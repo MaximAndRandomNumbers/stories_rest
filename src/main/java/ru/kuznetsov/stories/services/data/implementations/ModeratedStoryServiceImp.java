@@ -11,6 +11,7 @@ import ru.kuznetsov.stories.models.User;
 import ru.kuznetsov.stories.services.data.interfaces.ModeratedStoryService;
 import ru.kuznetsov.stories.services.data.interfaces.StoryService;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,14 @@ public class ModeratedStoryServiceImp implements ModeratedStoryService {
     @Override
     public void deleteStory(Story story) {
         moderatedStoryDao.delete(moderatedStoryDao.findByStoryId(story.getId()));
+    }
+
+    @Override
+    public boolean checkStory(Principal principal, Story story) {
+        return moderatedStoryDao.findByStoryId(story.getId())
+                .getModerator()
+                .getLogin()
+                .equals(principal.getName());
     }
 
 

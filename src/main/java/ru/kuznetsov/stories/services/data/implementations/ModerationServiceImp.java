@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.kuznetsov.stories.dto.StoryDto;
 import ru.kuznetsov.stories.models.Story;
 import ru.kuznetsov.stories.models.User;
+import ru.kuznetsov.stories.security.exceptions.AccessDeniedException;
 import ru.kuznetsov.stories.services.data.interfaces.*;
 
 import java.security.Principal;
@@ -69,10 +70,16 @@ public class ModerationServiceImp implements ModerationService {
         return new StoryDto(story);
     }
 
+    private void isStoryAvailableForModeration(Story story, Principal principal){
+        if(!moderatedStoryService.checkStory(principal, story)){
+            throw new AccessDeniedException("Вы не модерируете данный рассказ");
+        }
+    }
     @Override
-    public void approveStory(Long storyId) {
-        storyService.approveStory(storyId);
+    public void approveStory(Long storyId, Principal principal) {
         Story story = storyService.getById(storyId);
+        isStoryAvailableForModeration(story, principal);
+        storyService.approveStory(storyId);
         moderatedStoryService.deleteStory(story);
         //Adding notification to db
         notificationService.sendNotification(
@@ -85,8 +92,9 @@ public class ModerationServiceImp implements ModerationService {
     }
 
     @Override
-    public void rejectStory(Long storyId) {
+    public void rejectStory(Long storyId, Principal principal) {
         Story story = storyService.getById(storyId);
+        isStoryAvailableForModeration(story, principal);
         storyService.rejectStory(storyId);
         //Adding notification to db
         notificationService.sendNotification(
@@ -99,9 +107,10 @@ public class ModerationServiceImp implements ModerationService {
     }
 
     @Override
-    public void returnStoryToRefactor(Long storyId, String comment) {
-        storyService.setStoryOnRefactor(storyId);
+    public void returnStoryToRefactor(Long storyId, String comment, Principal principal) {
         Story story = storyService.getById(storyId);
+        isStoryAvailableForModeration(story, principal);
+        storyService.setStoryOnRefactor(storyId);
         moderatedStoryService.deleteStory(story);
         //Adding notification to db
         notificationService.sendNotification(

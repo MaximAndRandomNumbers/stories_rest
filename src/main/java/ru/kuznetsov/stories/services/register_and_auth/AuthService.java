@@ -71,12 +71,16 @@ public class AuthService {
         String login = requestDto.getLogin();
         String password = requestDto.getPassword();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
-        String jwtToken = jwtTokenProvider.createToken(login);
-        String refreshToken = refreshTokenService.generateToken(userService.findByLogin(requestDto.getLogin()));
+        User user = userService.findByLogin(login);
+        if(user == null){
+            user = userService.findByEmail(login);
+        }
+        String jwtToken = jwtTokenProvider.createToken(user.getLogin());
+        String refreshToken = refreshTokenService.generateToken(user);
         return AuthenticationResponseDto.builder()
                 .jwtToken(jwtToken)
                 .refreshToken(refreshToken)
-                .login(requestDto.getLogin())
+                .login(user.getLogin())
                 .build();
 
     }

@@ -37,7 +37,7 @@ public interface StoryDao extends JpaRepository<Story,Long> {
             nativeQuery = true)
     Page<Story> findFiltered(String authorLogin, String storyTitle, List<Long> genreFilter, Pageable pageable);
 
-    @Query(value="select * from story where marks_amount >= '1' order by rating desc limit 20",
+    @Query(value="select * from story where is_approved = 1 AND marks_amount >= '1' order by rating desc limit 20",
             nativeQuery = true)
     List<Story> getBestStories();
 

@@ -27,7 +27,8 @@ public class JwtTokenFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest);
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
@@ -38,7 +39,6 @@ public class JwtTokenFilter extends GenericFilterBean {
             }
         } catch (JwtAuthenticationException e){
             ((HttpServletResponse)servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            ((HttpServletResponse)servletResponse).setHeader("Access-Control-Allow-Origin","*");
             SecurityContextHolder.clearContext();
             return;
         }

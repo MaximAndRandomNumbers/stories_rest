@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kuznetsov.stories.dto.StoryDto;
+import ru.kuznetsov.stories.security.exceptions.AccessDeniedException;
 import ru.kuznetsov.stories.services.data.interfaces.ModerationService;
 
 import java.security.Principal;
@@ -22,41 +23,47 @@ public class ModeratorRestController {
     }
 
     @GetMapping("/get/story")
-    public ResponseEntity<?> getStoryToModerate(Principal principal){
+    public ResponseEntity<?> getStoryToModerate(Principal principal) {
         StoryDto storyDto = moderationService.getStoryToModerate(principal);
-        if(storyDto == null){
-            return new ResponseEntity<>("No stories avaliable", HttpStatus.NOT_FOUND);
+        if (storyDto == null) {
+            return new ResponseEntity<>("No stories available", HttpStatus.NOT_FOUND);
         } else {
             return ResponseEntity.ok(storyDto);
         }
     }
 
     @GetMapping("/approve/{storyId}")
-    public ResponseEntity<?> approveStory(@PathVariable Long storyId){
+    public ResponseEntity<?> approveStory(@PathVariable Long storyId, Principal principal) {
         try {
-            moderationService.approveStory(storyId);
+            moderationService.approveStory(storyId, principal);
             return ResponseEntity.ok("Рассказ был одобрен");
-        } catch (Exception e){
+        } catch (AccessDeniedException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return new ResponseEntity<>("Что-то пошло не так", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/refactor/{storyId}")
-    public ResponseEntity<?> refactor(@PathVariable Long storyId, @RequestBody Map<String,String> comment){
+    public ResponseEntity<?> refactor(@PathVariable Long storyId, @RequestBody Map<String, String> comment, Principal principal) {
         try {
-            moderationService.returnStoryToRefactor(storyId, comment.get("comment"));
-            return ResponseEntity.ok("История отправлена на доработку");
-        } catch (Exception e){
+            moderationService.returnStoryToRefactor(storyId, comment.get("comment"), principal);
+            return ResponseEntity.ok("Рассказ был отправлен на доработку");
+        } catch (AccessDeniedException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return new ResponseEntity<>("Что-то пошло не так", HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/reject/{storyId}")
-    public ResponseEntity<?> reject(@PathVariable Long storyId){
+    public ResponseEntity<?> reject(@PathVariable Long storyId, Principal principal) {
         try {
-            moderationService.rejectStory(storyId);
-            return ResponseEntity.ok("История удалена");
-        } catch (Exception e){
+            moderationService.rejectStory(storyId, principal);
+            return ResponseEntity.ok("Рассказ удалён");
+        } catch (AccessDeniedException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return new ResponseEntity<>("Что-то пошло не так", HttpStatus.BAD_REQUEST);
         }
     }
